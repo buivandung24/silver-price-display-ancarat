@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng Giá Bạc Tích Trữ</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header Live + Thời gian -->
+    <div class="header-bar">
+      <div class="live-tag">Live</div>
+      <div class="time-update">Giá lúc <%= current_time %></div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 47%;">Sản Phẩm</th>
+          <th style="width: 18%;">Mua</th>
+          <th style="width: 18%;">Bán</th>
+          <th style="width: 17%;">% thay đổi</th>
+        </tr>
+      </thead>
+      <tbody id="price-table-body">
+        <% products.forEach(product => { %>
+          <tr>
+            <td><%= product.name %></td>
+            <td><%= product.buy %></td>
+            <td><%= product.sell %></td>
+            <td class="change <%= product.change > 0 ? 'up' : (product.change < 0 ? 'down' : '') %>">
+              <%= product.change !== '-' && product.change != null ? (product.change > 0 ? '+' : '') + product.change + '%' : '-' %>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    async function fetchDataWithRetry() {
+      try {
+        const response = await fetch('/api/data');
+        if (!response.ok) throw new Error('Network response not ok');
+        return await response.json();
+      } catch (err) {
+        // Retry 1 lần nếu fail
+        try {
+          const retryResponse = await fetch('/api/data');
+          if (!retryResponse.ok) throw new Error('Retry failed');
+          return await retryResponse.json();
+        } catch (retryErr) {
+          console.error('Lỗi cập nhật giá sau retry:', retryErr);
+          throw retryErr;
+        }
+      }
+    }
+
+    function updatePrices() {
+      fetchDataWithRetry()
+        .then(data => {
+          // Cập nhật thời gian
+          document.querySelector('.time-update').textContent = 'Giá lúc ' + data.current_time;
+
+          // Cập nhật bảng
+          const tbody = document.getElementById('price-table-body');
+          tbody.innerHTML = '';
+
+          data.products.forEach(product => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${product.name}</td>
+              <td>${product.buy}</td>
+              <td>${product.sell}</td>
+              <td class="change ${product.change > 0 ? 'up' : (product.change < 0 ? 'down' : '')}">
+                ${product.change !== '-' && product.change !== null ? (product.change > 0 ? '+' : '') + product.change + '%' : '-'}
+              </td>
+            `;
+            tbody.appendChild(row);
+          });
+        })
+        .catch(err => {
+          document.querySelector('.time-update').textContent = 'Giá lúc Lỗi cập nhật';
+        });
+    }
+
+    // Cập nhật ngay lập tức sau 10 giây đầu
+    setTimeout(() => {
+      updatePrices();
+      // Sau đó cứ mỗi 3 phút cập nhật tiếp
+      setInterval(updatePrices, 180000);
+    }, 10000);
+  </script>
+</body>
+</html>

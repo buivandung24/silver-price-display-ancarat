@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng Giá Bạc LED Ngang - Xã Đàn</title>
+  <link rel="stylesheet" href="/styles.css"> <style>
+    /* CSS Dùng riêng cho Layout Ngang */
+    .container {
+      padding: 0; /* LED thường sát mép */
+      justify-content: flex-start;
+    }
+
+    /* Chia lưới chính: 3 cột lớn */
+    .price-grid-horizontal {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); 
+      width: 100%;
+      flex: 1;
+      background-color: #444; /* Màu đường kẻ dọc giữa các khối */
+      gap: 2px; 
+    }
+
+    /* Header của từng cột (Mua | Bán | % thay đổi) */
+    .column-header {
+      display: grid;
+      grid-template-columns: 3fr 1fr 1fr 1fr;
+      background-color: #000;
+      font-weight: bold;
+      font-size: 1.0vw;
+      border-bottom: 2px solid #fff;
+      padding: 1vh 0.5vw;
+      text-align: center;
+    }
+
+    /* Từng dòng sản phẩm */
+    .product-row {
+      display: grid;
+      grid-template-columns: 3fr 1fr 1fr 1fr;
+      background-color: #000;
+      border-bottom: 1px solid #333;
+      align-items: center;
+      padding: 1.5vh 0.5vw;
+    }
+
+    .product-name {
+      text-align: left;
+      font-size: 1.0vw;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .price-val {
+      text-align: left;
+      color: #ffff00;
+      font-weight: bold;
+      font-size: 1.0vw;
+    }
+
+    .change-val {
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.0vw;
+    }
+
+    /* Chia lại khối dữ liệu thành 3 phần */
+    .price-column {
+      display: flex;
+      flex-direction: column;
+      background-color: #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-bar">
+      <div class="live-tag" style="font-size: 1.5vw;">Live</div>
+      <div class="time-update" style="font-size: 1.5vw; margin-right: 75px;">Giá lúc <%= current_time %></div>
+    </div>
+
+    <div class="price-grid-horizontal" id="price-content">
+      <% 
+        // Chia mảng products thành 3 mảng con cho 3 cột
+        const colSize = Math.ceil(products.length / 3);
+        for(let i = 0; i < 3; i++) { 
+          const start = i * colSize;
+          const colProducts = products.slice(start, start + colSize);
+      %>
+        <div class="price-column">
+          <div class="column-header">
+            <div style="text-align: left;">Sản phẩm</div>
+            <div>Mua</div>
+            <div>Bán</div>
+            <div>% thay đổi</div>
+          </div>
+          
+          <% colProducts.forEach(product => { %>
+            <div class="product-row">
+              <div class="product-name"><%= product.name %></div>
+              <div class="price-val"><%= product.buy %></div>
+              <div class="price-val"><%= product.sell %></div>
+              <div class="change-val <%= product.change > 0 ? 'up' : (product.change < 0 ? 'down' : '') %>">
+                <%= (product.change > 0 ? '+' : '') + product.change + '%' %>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <script>
+    // Tận dụng logic cập nhật từ app.js của bạn
+    async function updatePrices() {
+      try {
+        const response = await fetch('/api/data');
+        const data = await response.json();
+        if (data) {
+           location.reload(); // Cách đơn giản nhất để render lại grid chia cột
+        }
+      } catch (err) { console.error('Lỗi:', err); }
+    }
+    setInterval(updatePrices, 180000); // 3 phút cập nhật 1 lần
+  </script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; /* Không scroll */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  padding: 1vh 2vw; /* Giảm padding một chút để tăng không gian hiển thị */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Chặn hoàn toàn scroll ở cấp container */
+  justify-content: flex-start;
+}
+
+h1 {
+  font-size: 5vw; /* Thu nhỏ nhẹ để nhường chỗ cho bảng */
+  margin: 1vh 0;
+  flex-shrink: 0; /* Không cho phép tiêu đề bị co lại */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* Bắt buộc các cột tuân theo width cố định % */
+  flex: 1; /* Quan trọng: Bảng sẽ chiếm toàn bộ không gian còn lại */
+  min-height: 0; /* Cho phép bảng co lại nhỏ hơn nội dung nếu cần */
+  font-size: 2.8vw;
+  margin-bottom: 1vh;
+}
+
+th, td {
+  border: 0.3vw solid #fff; /* Viền tỷ lệ */
+  padding: 1vh 1vw;
+  word-wrap: break-word;
+  vertical-align: middle;
+  font-size: 2.8vw;
+}
+
+th {
+  height: auto; /* Để header tự thích nghi */
+  padding: 1vh;
+  font-size: 2.8vw;
+}
+
+tbody {
+  display: table-row-group;
+}
+
+td:first-child {
+  width: 49%;
+  text-align: left;
+  font-size: 2.8vw; /* ~30px, dễ fit tên dài */
+}
+
+td:nth-child(2), td:nth-child(3) {
+  width: 18%;
+  text-align: right;
+  color: #ffff00;
+  font-weight: bold;
+  font-size: 2.8vw; /* ~36px, giá nổi bật */
+}
+
+td:nth-child(4) { /* Cột % thay đổi */
+  width: 15%;
+  font-size: 2.8vw;
+  font-weight: bold;
+  text-align: center;
+}
+
+.change.up {
+  color: #00ff00; /* Xanh lá nếu tăng */
+}
+
+.change.down {
+  color: #ff0000; /* Đỏ nếu giảm */
+}
+
+.change:not(.up):not(.down) {
+  color: #ffffff;
+}
+
+tr:nth-child(even) td {
+  background-color: #111;
+}
+
+tr:nth-child(odd) td {
+  background-color: #222;
+}
+
+.footer {
+  flex-shrink: 0;
+  font-size: 3.1vw; /* ~28px */
+  color: #ccc;
+  line-height: 1.4;
+}
+
+.footer p {
+  margin: 0.8vh 0;
+}
+
+.header-bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333; /* Nền xám giống hình */
+  padding: 0.8vh 2vw;
+  margin-bottom: 1vh;
+  border-radius: 0.5vw;
+  flex-shrink: 0;
+}
+
+.live-tag {
+  background-color: #ff0000; /* Đỏ nổi */
+  color: #fff;
+  font-size: 3.8vw;
+  font-weight: bold;
+  padding: 0.5vh 2vw;
+  border-radius: 0.5vw;
+  animation: blink 1.5s infinite; /* Nhấp nháy nhẹ */
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.time-update {
+  font-size: 3.8vw;
+  color: #fff;
+  font-weight: bold;
+}

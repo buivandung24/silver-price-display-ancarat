@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng Giá Bạc LED Ngang + Hình Ảnh</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 100vw;
+      height: 100vh;
+      padding: 0;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .header-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #333;
+      padding: 0.8vh 2vw;
+      margin-bottom: 1vh;
+      flex-shrink: 0;
+      font-size: 1.8vw;
+    }
+
+    .live-tag {
+      background-color: #ff0000;
+      color: #fff;
+      font-size: 2.5vw;
+      font-weight: bold;
+      padding: 0.5vh 2vw;
+      border-radius: 0.5vw;
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .time-update {
+      font-size: 2.5vw;
+      font-weight: bold;
+      margin-right: 5vw;
+    }
+
+    .main-content {
+      display: flex;
+      flex: 1;
+      background-color: #444;
+      gap: 2px;
+      overflow: hidden;
+    }
+
+    /* Phần bảng giá - chiếm ~73% */
+    .price-section {
+      flex: 7.3;
+      display: flex;
+      flex-direction: column;
+      background-color: #000;
+    }
+
+    /* Phần slideshow - chiếm ~27% */
+    .slideshow-section {
+      flex: 2.7;
+      position: relative;
+      overflow: hidden;
+      background-color: #000;
+    }
+
+    .price-grid-horizontal {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      width: 100%;
+      flex: 1;
+      gap: 2px;
+      background-color: #444;
+    }
+
+    .column-header {
+      display: grid;
+      grid-template-columns: 3fr 1fr 1fr 1fr;
+      background-color: #000;
+      font-weight: bold;
+      font-size: 1.0vw;
+      border-bottom: 2px solid #fff;
+      padding: 1vh 0.5vw;
+      text-align: center;
+    }
+
+    .product-row {
+      display: grid;
+      grid-template-columns: 3fr 1fr 1fr 1fr;
+      background-color: #000;
+      border-bottom: 1px solid #333;
+      align-items: center;
+      padding: 1.5vh 0.5vw;
+    }
+
+    .product-name {
+      text-align: left;
+      font-size: 1.0vw;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-left: 0.5vw;
+    }
+
+    .price-val {
+      text-align: left;
+      color: #ffff00;
+      font-weight: bold;
+      font-size: 1.0vw;
+    }
+
+    .change-val {
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.0vw;
+    }
+
+    .change-val.up { color: #00ff00; }
+    .change-val.down { color: #ff0000; }
+
+    .price-column {
+      display: flex;
+      flex-direction: column;
+      background-color: #000;
+    }
+
+    /* Slideshow */
+    .slideshow-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* giữ nguyên tỷ lệ, có viền đen nếu cần */
+      /* Nếu muốn crop full khung thì đổi thành: object-fit: cover; */
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-bar">
+      <div class="live-tag">Live</div>
+      <div class="time-update">Giá lúc <%= current_time %></div>
+    </div>
+
+    <div class="main-content">
+      <!-- Bảng giá bên trái -->
+      <div class="price-section">
+        <div class="price-grid-horizontal" id="price-content">
+          <% 
+            const colSize = Math.ceil(products.length / 3);
+            for(let i = 0; i < 3; i++) { 
+              const start = i * colSize;
+              const colProducts = products.slice(start, start + colSize);
+          %>
+            <div class="price-column">
+              <div class="column-header">
+                <div style="text-align: left;">Sản phẩm</div>
+                <div>Mua</div>
+                <div>Bán</div>
+                <div>% thay đổi</div>
+              </div>
+              
+              <% colProducts.forEach(product => { %>
+                <div class="product-row">
+                  <div class="product-name"><%= product.name %></div>
+                  <div class="price-val"><%= product.buy %></div>
+                  <div class="price-val"><%= product.sell %></div>
+                  <div class="change-val <%= product.change > 0 ? 'up' : (product.change < 0 ? 'down' : '') %>">
+                    <%= product.change !== '-' && product.change != null ? (product.change > 0 ? '+' : '') + product.change + '%' : '-' %>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Slideshow bên phải -->
+      <div class="slideshow-section">
+        <div class="slideshow-container" id="slideshow"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Cập nhật giá (giữ nguyên như xadan.ejs)
+    async function updatePrices() {
+      try {
+        const response = await fetch('/api/data');
+        if (!response.ok) throw new Error('Network error');
+        const data = await response.json();
+        if (data) location.reload();
+      } catch (err) {
+        console.error('Lỗi cập nhật giá:', err);
+      }
+    }
+    setInterval(updatePrices, 180000); // 3 phút
+
+    // ================== SLIDESHOW ==================
+    const images = [
+      '/images/slide1.jpg',
+      '/images/slide2.jpg',
+      '/images/slide3.jpg',
+      '/images/slide4.jpg',
+    ];
+
+    const slideshow = document.getElementById('slideshow');
+    let currentIndex = 0;
+
+    // Tạo slide
+    images.forEach((src, i) => {
+      const slide = document.createElement('div');
+      slide.className = 'slide' + (i === 0 ? ' active' : '');
+      
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = 'Hình quảng cáo';
+      
+      slide.appendChild(img);
+      slideshow.appendChild(slide);
+    });
+
+    // Chuyển hình mỗi 60 giây
+    setInterval(() => {
+      document.querySelectorAll('.slide')[currentIndex].classList.remove('active');
+      currentIndex = (currentIndex + 1) % images.length;
+      document.querySelectorAll('.slide')[currentIndex].classList.add('active');
+    }, 60000);
+
+    // Preload hình ảnh để mượt hơn
+    images.forEach(src => { new Image().src = src; });
+  </script>
+</body>
+</html>
