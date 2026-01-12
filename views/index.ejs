@@ -8,7 +8,6 @@
 </head>
 <body>
   <div class="container">
-    <!-- Header Live + Thời gian -->
     <div class="header-bar">
       <div class="live-tag">Live</div>
       <div class="time-update">Giá lúc <%= current_time %></div>
@@ -45,7 +44,6 @@
         if (!response.ok) throw new Error('Network response not ok');
         return await response.json();
       } catch (err) {
-        // Retry 1 lần nếu fail
         try {
           const retryResponse = await fetch('/api/data');
           if (!retryResponse.ok) throw new Error('Retry failed');

@@ -17,7 +17,7 @@
       grid-template-columns: repeat(3, 1fr); 
       width: 100%;
       flex: 1;
-      background-color: #444; /* Màu đường kẻ dọc giữa các khối */
+      background-color: #444;
       gap: 2px; 
     }
 
@@ -53,7 +53,6 @@
 
     .price-val {
       text-align: left;
-      color: #ffff00;
       font-weight: bold;
       font-size: 1.0vw;
     }
@@ -63,6 +62,9 @@
       font-weight: bold;
       font-size: 1.0vw;
     }
+
+    .change-val.up { color: #00ff00; }
+    .change-val.down { color: #ff0000; }
 
     /* Chia lại khối dữ liệu thành 3 phần */
     .price-column {
@@ -98,10 +100,10 @@
           <% colProducts.forEach(product => { %>
             <div class="product-row">
               <div class="product-name"><%= product.name %></div>
-              <div class="price-val"><%= product.buy %></div>
-              <div class="price-val"><%= product.sell %></div>
+              <div class="price-val" style="color: #ff0000;"><%= product.buy %></div>
+              <div class="price-val" style="color: #00ff00;"><%= product.sell %></div>
               <div class="change-val <%= product.change > 0 ? 'up' : (product.change < 0 ? 'down' : '') %>">
-                <%= (product.change > 0 ? '+' : '') + product.change + '%' %>
+                <%= product.change !== '-' && product.change != null ? (product.change > 0 ? '+' : '') + product.change + '%' : '-' %>
               </div>
             </div>
           <% }); %>
@@ -111,13 +113,12 @@
   </div>
 
   <script>
-    // Tận dụng logic cập nhật từ app.js của bạn
     async function updatePrices() {
       try {
         const response = await fetch('/api/data');
         const data = await response.json();
         if (data) {
-           location.reload(); // Cách đơn giản nhất để render lại grid chia cột
+           location.reload();
         }
       } catch (err) { console.error('Lỗi:', err); }
     }

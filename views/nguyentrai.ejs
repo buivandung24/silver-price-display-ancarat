@@ -127,7 +127,6 @@
 
     .price-val {
       text-align: left;
-      color: #ffff00;
       font-weight: bold;
       font-size: 1.0vw;
     }
@@ -167,8 +166,7 @@
     .slide img {
       width: 100%;
       height: 100%;
-      object-fit: contain; /* giữ nguyên tỷ lệ, có viền đen nếu cần */
-      /* Nếu muốn crop full khung thì đổi thành: object-fit: cover; */
+      object-fit: contain;
     }
 
     .slide.active {
@@ -204,8 +202,8 @@
               <% colProducts.forEach(product => { %>
                 <div class="product-row">
                   <div class="product-name"><%= product.name %></div>
-                  <div class="price-val"><%= product.buy %></div>
-                  <div class="price-val"><%= product.sell %></div>
+                  <div class="price-val" style="color: #ff0000;"><%= product.buy %></div>
+                  <div class="price-val" style="color: #00ff00;"><%= product.sell %></div>
                   <div class="change-val <%= product.change > 0 ? 'up' : (product.change < 0 ? 'down' : '') %>">
                     <%= product.change !== '-' && product.change != null ? (product.change > 0 ? '+' : '') + product.change + '%' : '-' %>
                   </div>
@@ -224,7 +222,7 @@
   </div>
 
   <script>
-    // Cập nhật giá (giữ nguyên như xadan.ejs)
+    // Cập nhật giá
     async function updatePrices() {
       try {
         const response = await fetch('/api/data');

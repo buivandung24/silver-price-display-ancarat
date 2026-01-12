@@ -1,7 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const app = express();
-const port = 3000;
+const port = 8192;
 
 const vietnamTimeFormatter = new Intl.DateTimeFormat('vi-VN', {
   timeZone: 'Asia/Ho_Chi_Minh',
@@ -20,7 +20,7 @@ let last_update = '';
 let vat_note = '';
 let hotline = '';
 
-// Biến lưu giá cũ cho từng sản phẩm (persistent trong server)
+// Biến lưu giá cũ cho từng sản phẩm
 const previousPrices = {}; // { 'title': { sell: number, buy: number, changePercent: string } }
 
 const desired_products = [
@@ -44,7 +44,7 @@ function calculateChange(current, previous) {
   const percent = ((currNum - prevNum) / prevNum) * 100;
   const rounded = percent.toFixed(2);
 
-  // Chỉ trả về nếu thực sự có thay đổi (không phải 0.00 hoặc -0.00)
+  // Chỉ trả về nếu thực sự có thay đổi
   if (parseFloat(rounded) === 0) return null;
   
   return rounded;
@@ -125,7 +125,7 @@ async function fetchSilverData() {
     }
   } catch (error) {
     console.error('Error fetching silver API:', error.message);
-    last_update = 'Lỗi kết nối API'; // THÊM DÒNG NÀY ĐỂ XỬ LÝ LỖI THỜI GIAN
+    last_update = 'Lỗi kết nối API';
   }
   return desired_products.map(d => ({ name: d.title, sell: '-', buy: '-', change: '-' }));
 }

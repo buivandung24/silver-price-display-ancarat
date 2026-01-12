@@ -60,15 +60,23 @@ tbody {
 td:first-child {
   width: 49%;
   text-align: left;
-  font-size: 2.8vw; /* ~30px, dễ fit tên dài */
+  font-size: 2.8vw;
 }
 
-td:nth-child(2), td:nth-child(3) {
+td:nth-child(2) {
   width: 18%;
   text-align: right;
-  color: #ffff00;
+  color: #ff0000 !important;
   font-weight: bold;
-  font-size: 2.8vw; /* ~36px, giá nổi bật */
+  font-size: 2.8vw;
+}
+
+td:nth-child(3) {
+  width: 18%;
+  text-align: right;
+  color: #00ff00 !important;
+  font-weight: bold;
+  font-size: 2.8vw;
 }
 
 td:nth-child(4) { /* Cột % thay đổi */
