@@ -34,9 +34,6 @@ const productGroups = {
     { title: 'Ngân Long - Bắc Sư Tử 999 - 1 lượng',     keywords: ['999', '1 lượng', 'Ngân Long'] },
     { title: 'Ngân Long - Bắc Sư Tử 999 - 5 lượng',     keywords: ['999', '5 lượng', 'Ngân Long'] },
     { title: 'Ngân Long Quảng Tiến 999 - 1 Kilo',       keywords: ['999', '1 Kilo', 'Ngân Long'] },
-    { title: 'Bạc thỏi 2025 Ancarat 999 - 375 gram', keywords: ['Bạc thỏi', '375'] },
-    { title: 'Bạc thỏi 2025 Ancarat 999 - 500 gram', keywords: ['Bạc thỏi', '500'] },
-    { title: 'Bạc thỏi 2025 Ancarat 999 - 1000 gram', keywords: ['Bạc thỏi', '1000'] },
   ],
 };
 

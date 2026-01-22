@@ -5,16 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bảng Giá Bạc LED Ngang - Mạnh Vũ</title>
   <link rel="stylesheet" href="/styles.css"> <style>
-    /* CSS Dùng riêng cho Layout Ngang */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #ffffff;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden; /* Không scroll */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
     .container {
       padding: 0; /* LED thường sát mép */
       justify-content: flex-start;
     }
 
+    .title {
+      font-size: 2.5vw; 
+      color: #fff; 
+      text-align: center; 
+      background: linear-gradient(to right, #ff0000, #d26a02, #b3b300, #00cf00, #4444fc, #8000dc, #8b00ff);
+      -webkit-background-clip: text; /* Cắt nền theo hình dạng chữ */
+      -webkit-text-fill-color: transparent; /* Làm chữ trong suốt để hiện nền */
+      font-weight: bold;
+      padding: 2vh 0;
+    }
+
+    .header-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #9c2373; /* Nền xám giống hình */
+      padding: 0.8vh 2vw;
+      margin-bottom: 1vh;
+      border-radius: 0vw;
+      flex-shrink: 0;
+    }
+
     /* Chia lưới chính: 3 cột lớn */
     .price-grid-horizontal {
       display: grid;
-      grid-template-columns: repeat(2, 1fr); 
+      grid-template-columns: repeat(1, 1fr); 
       width: 100%;
       flex: 1;
       background-color: #444;
@@ -24,10 +60,10 @@
     /* Header của từng cột (Mua | Bán | % thay đổi) */
     .column-header {
       display: grid;
-      grid-template-columns: 3fr 1fr 1fr 1fr;
-      background-color: #000;
+      grid-template-columns: 3.7fr 1.3fr 1fr 1.1fr;
+      background-color: #9c2373;
       font-weight: bold;
-      font-size: 1.5vw;
+      font-size: 2vw;
       border-bottom: 2px solid #fff;
       padding: 1vh 0.5vw;
       text-align: center;
@@ -37,15 +73,17 @@
     .product-row {
       display: grid;
       grid-template-columns: 3fr 1fr 1fr 1fr;
-      background-color: #000;
+      background-color: #e7e7e7;
       border-bottom: 1px solid #333;
       align-items: center;
       padding: 1.5vh 0.5vw;
+      color: #000000;
+      margin: 1.5px 0;
     }
 
     .product-name {
       text-align: left;
-      font-size: 1.38vw;
+      font-size: 2vw;
       white-space: normal;       /* Cho phép xuống dòng */
       word-break: break-word;    /* Ngắt từ nếu quá dài */
       line-height: 1.2;          /* Khoảng cách giữa các dòng khi xuống dòng */
@@ -54,18 +92,19 @@
       -webkit-line-clamp: 2;     /* Giới hạn tối đa 2 dòng để không vỡ layout bảng */
       -webkit-box-orient: vertical;
       overflow: hidden;
+      font-weight: bold;
     }
 
     .price-val {
       text-align: right;
       font-weight: bold;
-      font-size: 1.5vw;
+      font-size: 2vw;
     }
 
     .change-val {
       text-align: center;
       font-weight: bold;
-      font-size: 1.5vw;
+      font-size: 2vw;
     }
 
     .change-val.up { color: #00ff00; }
@@ -75,44 +114,38 @@
     .price-column {
       display: flex;
       flex-direction: column;
-      background-color: #000;
+      background-color: #ffffff;
       border: 1px solid #ffffff;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header-bar">
-      <div class="live-tag" style="font-size: 2.0vw;">Live</div>
-      <div class="time-update" style="font-size: 2.0vw; margin-right: 75px;">Giá lúc <%= current_time %></div>
-    </div>
+    <div class="title">MẠNH VŨ SILVER - 208 CẦU ĐẤT - KÍNH CHÀO QUÝ KHÁCH</div>
 
     <div class="price-grid-horizontal" id="price-content">
       <% 
         // Chia mảng products thành 2 mảng con cho 3 cột
-        const colSize = Math.ceil(products.length / 2);
-        for(let i = 0; i < 2; i++) { 
+        const colSize = Math.ceil(products.length / 1);
+        for(let i = 0; i < 1; i++) { 
           const start = i * colSize;
           const colProducts = products.slice(start, start + colSize);
       %>
         <div class="price-column">
           <div class="column-header">
-            <div style="text-align: left;">
+            <div style="text-align: center;">
               Sản phẩm
-              <% if (i === 1) { %> 
-                <span style="font-size: 1.5vw; margin-left: 5px;">(Ngừng Phát Hành)</span>
-              <% } %>
             </div>
-            <div>Mua</div>
-            <div>Bán</div>
-            <div>% thay đổi</div>
+            <div style="text-align: center;">Mua</div>
+            <div style="text-align: center;">Bán</div>
+            <div style="text-align: center;">% thay đổi</div>
           </div>
           
           <% colProducts.forEach(product => { %>
             <div class="product-row">
               <div class="product-name"><%= product.name %></div>
-              <div class="price-val" style="color: #ff0000;"><%= product.buy %></div>
-              <div class="price-val" style="color: #00ff00;"><%= product.sell %></div>
+              <div class="price-val" style="color: #df1717;"><%= product.buy %></div>
+              <div class="price-val" style="color: #2a952a;"><%= product.sell %></div>
               <div class="change-val <%= product.change > 0 ? 'up' : (product.change < 0 ? 'down' : '') %>">
                 <%= product.change !== '-' && product.change != null ? (product.change > 0 ? '+' : '') + product.change + '%' : '-' %>
               </div>
