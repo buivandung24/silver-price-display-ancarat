@@ -73,7 +73,7 @@
     .product-row {
       display: grid;
       grid-template-columns: 3fr 1fr 1fr 1fr;
-      background-color: #e7e7e7;
+      background-color: #fffeeb;
       border-bottom: 1px solid #333;
       align-items: center;
       padding: 1.5vh 0.5vw;
@@ -107,8 +107,8 @@
       font-size: 2vw;
     }
 
-    .change-val.up { color: #2a952a; }
-    .change-val.down { color: #df1717; }
+    .change-val.up { color: #139113; }
+    .change-val.down { color: #b61414; }
 
     /* Chia lại khối dữ liệu thành 3 phần */
     .price-column {
@@ -144,8 +144,8 @@
           <% colProducts.forEach(product => { %>
             <div class="product-row">
               <div class="product-name"><%= product.name %></div>
-              <div class="price-val" style="color: #df1717;"><%= product.buy %></div>
-              <div class="price-val" style="color: #2a952a;"><%= product.sell %></div>
+              <div class="price-val" style="color: #b61414;"><%= product.buy %></div>
+              <div class="price-val" style="color: #139113;"><%= product.sell %></div>
               <div class="change-val <%= product.change > 0 ? 'up' : (product.change < 0 ? 'down' : '') %>">
                 <%= product.change !== '-' && product.change != null ? (product.change > 0 ? '+' : '') + product.change + '%' : '-' %>
               </div>
