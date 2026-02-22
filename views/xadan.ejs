@@ -24,10 +24,10 @@
     /* Header của từng cột (Mua | Bán | % thay đổi) */
     .column-header {
       display: grid;
-      grid-template-columns: 3fr 1fr 1fr 1fr;
+      grid-template-columns: 3.5fr 1fr 1fr 1.5fr;
       background-color: #000;
       font-weight: bold;
-      font-size: 1.0vw;
+      font-size: 1.3vw;
       border-bottom: 2px solid #fff;
       padding: 1vh 0.5vw;
       text-align: center;
@@ -36,7 +36,7 @@
     /* Từng dòng sản phẩm */
     .product-row {
       display: grid;
-      grid-template-columns: 3fr 1fr 1fr 1fr;
+      grid-template-columns: 3.5fr 1fr 1fr 1.5fr;
       background-color: #000;
       border-bottom: 1px solid #333;
       align-items: center;
@@ -45,22 +45,25 @@
 
     .product-name {
       text-align: left;
-      font-size: 1.0vw;
+      font-size: 1.07vw;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      font-weight: bold;
+      padding-top: 2vh;
+      padding-bottom: 2vh;
     }
 
     .price-val {
       text-align: right;
       font-weight: bold;
-      font-size: 1.0vw;
+      font-size: 1.3vw;
     }
 
     .change-val {
       text-align: center;
       font-weight: bold;
-      font-size: 1.0vw;
+      font-size: 1.3vw;
     }
 
     .change-val.up { color: #00ff00; }

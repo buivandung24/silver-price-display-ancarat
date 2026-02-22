@@ -60,6 +60,7 @@ function calculateChange(current, previous) {
 // Hàm chính: lấy dữ liệu API → lọc theo danh sách mong muốn
 async function fetchAndFilterProducts(desiredList) {
   const api_url = "https://giabac.ancarat.com/api/price-data";
+  const isDefault = (desiredList === productGroups.default);
 
   try {
     const response = await axios.get(api_url, { timeout: 10000 });
@@ -100,6 +101,12 @@ async function fetchAndFilterProducts(desiredList) {
       if (matched) {
         sell = matched.sell;
         buy = matched.buy;
+
+        if (isDefault) {
+          // Cắt 4 ký tự cuối nếu chuỗi đủ dài (tránh lỗi chuỗi quá ngắn)
+          if (sell.length > 4) sell = sell.slice(0, -4);
+          if (buy.length > 4)  buy = buy.slice(0, -4);
+        }
 
         const sellNum = parseFloat(sell.replace(/,/g, ''));
         const prev = previousPrices[desired.title];
