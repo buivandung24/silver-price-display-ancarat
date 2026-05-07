@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng Giá Bạc LED Dọc - Mạnh Vũ 2</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #ffffff;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      width: 480px;
+      min-height: 3200px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .container {
+      width: 480px;
+      min-height: 3200px;
+      padding: 0;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .title {
+      font-size: 22px;
+      color: #fff;
+      text-align: center;
+      background: linear-gradient(to right, #ff0000, #d26a02, #b3b300, #00cf00, #4444fc, #8000dc, #8b00ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: bold;
+      padding: 18px 8px;
+      line-height: 1.3;
+    }
+
+    .header-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #9c2373;
+      padding: 10px 14px;
+      margin-bottom: 6px;
+      box-sizing: border-box;
+      flex-shrink: 0;
+    }
+
+    .live-tag {
+      background-color: #ff0000;
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 4px 14px;
+      border-radius: 4px;
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .time-update {
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    /* Lưới chính: 1 cột */
+    .price-grid-horizontal {
+      display: grid;
+      grid-template-columns: 1fr;
+      width: 100%;
+      background-color: #444;
+      gap: 2px;
+    }
+
+    /* Header cột */
+    .column-header {
+      display: grid;
+      grid-template-columns: 2.8fr 1.1fr 1fr 1.1fr;
+      background-color: #9c2373;
+      font-weight: bold;
+      font-size: 18px;
+      border-bottom: 2px solid #fff;
+      padding: 10px 8px;
+      text-align: center;
+      color: #fff;
+    }
+
+    /* Dòng sản phẩm */
+    .product-row {
+      display: grid;
+      grid-template-columns: 2.8fr 1.1fr 1fr 1.1fr;
+      background-color: #fffeeb;
+      border-bottom: 1px solid #ccc;
+      align-items: center;
+      padding: 18px 8px;
+      color: #000000;
+      margin: 2px 0;
+      box-sizing: border-box;
+      min-height: 80px;
+    }
+
+    .product-name {
+      text-align: left;
+      font-size: 17px;
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.3;
+      padding-right: 6px;
+      font-weight: bold;
+    }
+
+    .price-val {
+      text-align: right;
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+    .change-val {
+      text-align: center;
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+    .change-val.up  { color: #139113; }
+    .change-val.down { color: #b61414; }
+
+    .price-column {
+      display: flex;
+      flex-direction: column;
+      background-color: #ffffff;
+      border: 1px solid #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">MẠNH VŨ SILVER - 208 CẦU ĐẤT - KÍNH CHÀO QUÝ KHÁCH</div>
+
+    <div class="header-bar">
+      <div class="live-tag">Live</div>
+      <div class="time-update">Giá lúc <%= current_time %></div>
+    </div>
+
+    <div class="price-grid-horizontal" id="price-content">
+      <%
+        const colSize = Math.ceil(products.length / 1);
+        for (let i = 0; i < 1; i++) {
+          const start = i * colSize;
+          const colProducts = products.slice(start, start + colSize);
+      %>
+        <div class="price-column">
+          <div class="column-header">
+            <div style="text-align: center;">Sản phẩm</div>
+            <div style="text-align: center;">Mua</div>
+            <div style="text-align: center;">Bán</div>
+            <div style="text-align: center;">% thay đổi</div>
+          </div>
+
+          <% colProducts.forEach(product => { %>
+            <div class="product-row">
+              <div class="product-name"><%= product.name %></div>
+              <div class="price-val" style="color: #b61414;"><%= product.buy %></div>
+              <div class="price-val" style="color: #139113;"><%= product.sell %></div>
+              <div class="change-val <%= product.change > 0 ? 'up' : (product.change < 0 ? 'down' : '') %>">
+                <%= product.change !== '-' && product.change != null ? (product.change > 0 ? '+' : '') + product.change + '%' : '-' %>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <script>
+    async function updatePrices() {
+      try {
+        const response = await fetch('/api/data');
+        const data = await response.json();
+        if (data) {
+          location.reload();
+        }
+      } catch (err) { console.error('Lỗi:', err); }
+    }
+    setInterval(updatePrices, 180000); // 3 phút cập nhật 1 lần
+  </script>
+</body>
+</html>

@@ -208,6 +208,12 @@ app.get('/manhvu', async (req, res) => {
   res.render('manhvu', { products, current_time });
 });
 
+app.get('/manhvu2', async (req, res) => {
+  const products = await fetchAndFilterProducts(productGroups.manhvu);
+  const current_time = vietnamTimeFormatter.format(new Date());
+  res.render('manhvu2', { products, current_time });
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
