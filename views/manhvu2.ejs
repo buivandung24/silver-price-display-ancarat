@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bảng Giá Bạc LED Dọc - Mạnh Vũ 2</title>
+  <title>Bảng Giá Bạc LED Ngang - Mạnh Vũ 2</title>
   <link rel="stylesheet" href="/styles.css">
   <style>
     body {
@@ -12,34 +12,29 @@
       background-color: #ffffff;
       color: #fff;
       font-family: Arial, Helvetica, sans-serif;
-      width: 480px;
-      min-height: 3200px;
+      height: 100vh;
+      width: 100vw;
       overflow: hidden;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
     }
 
     .container {
-      width: 480px;
-      min-height: 3200px;
       padding: 0;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
       justify-content: flex-start;
     }
 
     .title {
-      font-size: 22px;
-      color: #fff;
-      text-align: center;
+      font-size: 3.2vw; 
+      color: #fff; 
+      text-align: center; 
       background: linear-gradient(to right, #ff0000, #d26a02, #b3b300, #00cf00, #4444fc, #8000dc, #8b00ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       font-weight: bold;
-      padding: 18px 8px;
-      line-height: 1.3;
+      padding: 1.8vh 0;
+      letter-spacing: 1px;
     }
 
     .header-bar {
@@ -48,115 +43,81 @@
       justify-content: space-between;
       align-items: center;
       background-color: #9c2373;
-      padding: 10px 14px;
-      margin-bottom: 6px;
-      box-sizing: border-box;
+      padding: 0.8vh 2vw;
+      margin-bottom: 1vh;
+      border-radius: 0;
       flex-shrink: 0;
     }
 
-    .live-tag {
-      background-color: #ff0000;
-      color: #fff;
-      font-size: 18px;
-      font-weight: bold;
-      padding: 4px 14px;
-      border-radius: 4px;
-      animation: blink 1.5s infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
-
-    .time-update {
-      font-size: 16px;
-      font-weight: bold;
-      color: #fff;
-    }
-
-    /* Lưới chính: 1 cột */
     .price-grid-horizontal {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(1, 1fr); 
       width: 100%;
+      flex: 1;
       background-color: #444;
-      gap: 2px;
+      gap: 2px; 
     }
 
-    /* Header cột */
     .column-header {
       display: grid;
-      grid-template-columns: 2.8fr 1.1fr 1fr 1.1fr;
+      grid-template-columns: 3.7fr 1.3fr 1fr 1.1fr;
       background-color: #9c2373;
       font-weight: bold;
-      font-size: 18px;
+      font-size: 2.4vw;        /* Tăng size cho màn ngang */
       border-bottom: 2px solid #fff;
-      padding: 10px 8px;
+      padding: 1.2vh 0.5vw;
       text-align: center;
-      color: #fff;
     }
 
-    /* Dòng sản phẩm */
     .product-row {
       display: grid;
-      grid-template-columns: 2.8fr 1.1fr 1fr 1.1fr;
+      grid-template-columns: 3fr 1fr 1fr 1fr;
       background-color: #fffeeb;
-      border-bottom: 1px solid #ccc;
+      border-bottom: 1px solid #333;
       align-items: center;
-      padding: 18px 8px;
+      padding: 1.8vh 0.5vw;     /* Tăng padding dọc một chút */
       color: #000000;
-      margin: 2px 0;
-      box-sizing: border-box;
-      min-height: 80px;
+      margin: 1.5px 0;
     }
 
     .product-name {
       text-align: left;
-      font-size: 17px;
+      font-size: 2.35vw;        /* Tăng size tên sản phẩm */
       white-space: normal;
       word-break: break-word;
-      line-height: 1.3;
-      padding-right: 6px;
+      line-height: 1.25;
+      padding-right: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
       font-weight: bold;
     }
 
     .price-val {
       text-align: right;
       font-weight: bold;
-      font-size: 17px;
+      font-size: 2.55vw;        /* Tăng size giá */
     }
 
     .change-val {
       text-align: center;
       font-weight: bold;
-      font-size: 17px;
+      font-size: 2.55vw;
     }
 
-    .change-val.up  { color: #139113; }
+    .change-val.up { color: #139113; }
     .change-val.down { color: #b61414; }
-
-    .price-column {
-      display: flex;
-      flex-direction: column;
-      background-color: #ffffff;
-      border: 1px solid #ffffff;
-    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="title">MẠNH VŨ SILVER - 91 TRẦN HƯNG ĐẠO - KÍNH CHÀO QUÝ KHÁCH</div>
 
-    <div class="header-bar">
-      <div class="live-tag">Live</div>
-      <div class="time-update">Giá lúc <%= current_time %></div>
-    </div>
-
     <div class="price-grid-horizontal" id="price-content">
-      <%
+      <% 
         const colSize = Math.ceil(products.length / 1);
-        for (let i = 0; i < 1; i++) {
+        for(let i = 0; i < 1; i++) { 
           const start = i * colSize;
           const colProducts = products.slice(start, start + colSize);
       %>
@@ -167,7 +128,7 @@
             <div style="text-align: center;">Bán</div>
             <div style="text-align: center;">% thay đổi</div>
           </div>
-
+          
           <% colProducts.forEach(product => { %>
             <div class="product-row">
               <div class="product-name"><%= product.name %></div>
@@ -189,11 +150,11 @@
         const response = await fetch('/api/data');
         const data = await response.json();
         if (data) {
-          location.reload();
+           location.reload();
         }
       } catch (err) { console.error('Lỗi:', err); }
     }
-    setInterval(updatePrices, 180000); // 3 phút cập nhật 1 lần
+    setInterval(updatePrices, 180000); // 3 phút
   </script>
 </body>
 </html>
