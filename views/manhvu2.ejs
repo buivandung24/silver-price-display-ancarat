@@ -36,7 +36,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 19.5vh;
+      font-size: 18vh;
       text-align: center;
       background: linear-gradient(to right, #ff0000, #d26a02, #b3b300, #00cf00, #4444fc, #8000dc, #8b00ff);
       -webkit-background-clip: text;
@@ -65,13 +65,18 @@
       grid-template-columns: 4fr 1.2fr 1.1fr 1.1fr;
       background-color: #9c2373;
       font-weight: bold;
-      font-size: 14vh;
+      font-size: 16vh;
       padding: 0.5vh 1vw;
       text-align: center;
       color: white;
       white-space: nowrap;
       flex-shrink: 0;
       align-items: center;
+    }
+
+    .column-header > div {
+      text-align: center;
+      padding-left: 0;
     }
 
     .rows-wrapper {
@@ -100,7 +105,7 @@
     /* Font giới hạn bởi chiều ngang: 17vh (~82px) vừa khít tên dài nhất */
     .product-name {
       text-align: left;
-      font-size: 17vh;
+      font-size: 16vh;
       font-weight: bold;
       white-space: nowrap;
       overflow: hidden;
@@ -113,14 +118,14 @@
     .price-val {
       text-align: right;
       font-weight: bold;
-      font-size: 19vh;
+      font-size: 16vh;
       line-height: 1;
     }
 
     .change-val {
       text-align: center;
       font-weight: bold;
-      font-size: 17vh;
+      font-size: 15vh;
       line-height: 1;
     }
 
@@ -134,7 +139,7 @@
 
     <div class="price-column">
       <div class="column-header">
-        <div style="text-align:left; padding-left:0.5vw;">Sản phẩm</div>
+        <div>Sản phẩm</div>
         <div>Mua</div>
         <div>Bán</div>
         <div>% thay đổi</div>
