@@ -2,111 +2,118 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Bảng Giá Bạc LED Ngang - Mạnh Vũ 2</title>
   <link rel="stylesheet" href="/styles.css">
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
       margin: 0;
       padding: 0;
       background-color: #ffffff;
-      color: #fff;
+      color: #000;
       font-family: Arial, Helvetica, sans-serif;
       height: 100vh;
       width: 100vw;
       overflow: hidden;
       display: flex;
-      justify-content: center;
-      align-items: center;
+      flex-direction: column;
     }
 
     .container {
-      padding: 0;
-      justify-content: flex-start;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
+    /* Title cố định chiều cao, font vừa 1 dòng */
     .title {
-      font-size: 3.2vw; 
-      color: #fff; 
-      text-align: center; 
+      height: 13vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9vh;
+      text-align: center;
       background: linear-gradient(to right, #ff0000, #d26a02, #b3b300, #00cf00, #4444fc, #8000dc, #8b00ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       font-weight: bold;
-      padding: 1.8vh 0;
-      letter-spacing: 1px;
-    }
-
-    .header-bar {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #9c2373;
-      padding: 0.8vh 2vw;
-      margin-bottom: 1vh;
-      border-radius: 0;
+      white-space: nowrap;
+      overflow: hidden;
       flex-shrink: 0;
     }
 
-    .price-grid-horizontal {
-      display: grid;
-      grid-template-columns: repeat(1, 1fr); 
-      width: 100%;
+    /* Bảng giá chiếm toàn bộ phần còn lại */
+    .price-column {
       flex: 1;
-      background-color: #444;
-      gap: 2px; 
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
 
+    /* Header cố định */
     .column-header {
       display: grid;
-      grid-template-columns: 3.7fr 1.3fr 1fr 1.1fr;
+      grid-template-columns: 4fr 1.2fr 1.1fr 1.1fr;
       background-color: #9c2373;
       font-weight: bold;
-      font-size: 2.4vw;        /* Tăng size cho màn ngang */
-      border-bottom: 2px solid #fff;
-      padding: 1.2vh 0.5vw;
+      font-size: 8vh;
+      padding: 1vh 1vw;
       text-align: center;
+      color: white;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Các hàng giãn đều lấp đầy chiều cao còn lại */
+    .rows-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
 
     .product-row {
+      flex: 1;                   /* Mỗi hàng chiếm phần bằng nhau */
       display: grid;
-      grid-template-columns: 3fr 1fr 1fr 1fr;
+      grid-template-columns: 4fr 1.2fr 1.1fr 1.1fr;
       background-color: #fffeeb;
-      border-bottom: 1px solid #333;
+      border-bottom: 2px solid #ddd;
       align-items: center;
-      padding: 1.8vh 0.5vw;     /* Tăng padding dọc một chút */
+      padding: 0 1vw;
       color: #000000;
-      margin: 1.5px 0;
+      min-height: 0;
+    }
+
+    .product-row:nth-child(even) {
+      background-color: #fff8dc;
     }
 
     .product-name {
       text-align: left;
-      font-size: 2.35vw;        /* Tăng size tên sản phẩm */
-      white-space: normal;
-      word-break: break-word;
-      line-height: 1.25;
-      padding-right: 8px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      font-size: 8vh;
       font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-right: 1vw;
     }
 
     .price-val {
       text-align: right;
       font-weight: bold;
-      font-size: 2.55vw;        /* Tăng size giá */
+      font-size: 9vh;
     }
 
     .change-val {
       text-align: center;
       font-weight: bold;
-      font-size: 2.55vw;
+      font-size: 8.5vh;
     }
 
-    .change-val.up { color: #139113; }
+    .change-val.up   { color: #139113; }
     .change-val.down { color: #b61414; }
   </style>
 </head>
@@ -114,33 +121,32 @@
   <div class="container">
     <div class="title">MẠNH VŨ SILVER - 91 TRẦN HƯNG ĐẠO - KÍNH CHÀO QUÝ KHÁCH</div>
 
-    <div class="price-grid-horizontal" id="price-content">
-      <% 
-        const colSize = Math.ceil(products.length / 1);
-        for(let i = 0; i < 1; i++) { 
-          const start = i * colSize;
-          const colProducts = products.slice(start, start + colSize);
-      %>
-        <div class="price-column">
-          <div class="column-header">
-            <div style="text-align: center;">Sản phẩm</div>
-            <div style="text-align: center;">Mua</div>
-            <div style="text-align: center;">Bán</div>
-            <div style="text-align: center;">% thay đổi</div>
-          </div>
-          
-          <% colProducts.forEach(product => { %>
-            <div class="product-row">
-              <div class="product-name"><%= product.name %></div>
-              <div class="price-val" style="color: #b61414;"><%= product.buy %></div>
-              <div class="price-val" style="color: #139113;"><%= product.sell %></div>
-              <div class="change-val <%= product.change > 0 ? 'up' : (product.change < 0 ? 'down' : '') %>">
-                <%= product.change !== '-' && product.change != null ? (product.change > 0 ? '+' : '') + product.change + '%' : '-' %>
-              </div>
+    <%
+      const colSize = Math.ceil(products.length / 1);
+      const colProducts = products.slice(0, colSize);
+    %>
+    <div class="price-column">
+      <div class="column-header">
+        <div style="text-align:left; padding-left:0.5vw;">Sản phẩm</div>
+        <div>Mua</div>
+        <div>Bán</div>
+        <div>% thay đổi</div>
+      </div>
+
+      <div class="rows-wrapper">
+        <% colProducts.forEach(product => { %>
+          <div class="product-row">
+            <div class="product-name"><%= product.name %></div>
+            <div class="price-val" style="color:#b61414;"><%= product.buy %></div>
+            <div class="price-val" style="color:#139113;"><%= product.sell %></div>
+            <div class="change-val <%= product.change > 0 ? 'up' : (product.change < 0 ? 'down' : '') %>">
+              <%= product.change !== '-' && product.change != null
+                  ? (product.change > 0 ? '+' : '') + product.change + '%'
+                  : '-' %>
             </div>
-          <% }); %>
-        </div>
-      <% } %>
+          </div>
+        <% }); %>
+      </div>
     </div>
   </div>
 
@@ -148,13 +154,10 @@
     async function updatePrices() {
       try {
         const response = await fetch('/api/data');
-        const data = await response.json();
-        if (data) {
-           location.reload();
-        }
+        if (response.ok) location.reload();
       } catch (err) { console.error('Lỗi:', err); }
     }
-    setInterval(updatePrices, 180000); // 3 phút
+    setInterval(updatePrices, 180000);
   </script>
 </body>
 </html>
