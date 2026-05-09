@@ -8,33 +8,35 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #ffffff;
-      color: #000;
-      font-family: Arial, Helvetica, sans-serif;
-      height: 100vh;
+    html, body {
       width: 100vw;
+      height: 100vh;
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      background-color: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     .container {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
+      width: 100vw !important;
+      height: 100vh !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
     }
 
-    /* Title cố định chiều cao, font vừa 1 dòng */
+    /* Title: ~12vh cao, font vừa 1 dòng */
     .title {
-      height: 13vh;
+      height: 22vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 9vh;
+      font-size: 19.5vh;
       text-align: center;
       background: linear-gradient(to right, #ff0000, #d26a02, #b3b300, #00cf00, #4444fc, #8000dc, #8b00ff);
       -webkit-background-clip: text;
@@ -43,9 +45,9 @@
       white-space: nowrap;
       overflow: hidden;
       flex-shrink: 0;
+      line-height: 1;
     }
 
-    /* Bảng giá chiếm toàn bộ phần còn lại */
     .price-column {
       flex: 1;
       display: flex;
@@ -53,21 +55,25 @@
       min-height: 0;
     }
 
-    /* Header cố định */
+    /* 
+      Grid: 4fr 1.2fr 1.1fr 1.1fr
+      Cột tên SP rộng nhất: "Ngân Long - Bắc Sư Tử 999 - 1 lượng" (35 ký tự)
+      Tính toán: font 17vh ≈ 81.6px → 35 ký tự * 0.58 * 81.6 ≈ 1656px < 1695px ✅
+    */
     .column-header {
       display: grid;
       grid-template-columns: 4fr 1.2fr 1.1fr 1.1fr;
       background-color: #9c2373;
       font-weight: bold;
-      font-size: 8vh;
-      padding: 1vh 1vw;
+      font-size: 14vh;
+      padding: 0.5vh 1vw;
       text-align: center;
       color: white;
       white-space: nowrap;
       flex-shrink: 0;
+      align-items: center;
     }
 
-    /* Các hàng giãn đều lấp đầy chiều cao còn lại */
     .rows-wrapper {
       flex: 1;
       display: flex;
@@ -76,14 +82,14 @@
     }
 
     .product-row {
-      flex: 1;                   /* Mỗi hàng chiếm phần bằng nhau */
+      flex: 1;
       display: grid;
       grid-template-columns: 4fr 1.2fr 1.1fr 1.1fr;
       background-color: #fffeeb;
       border-bottom: 2px solid #ddd;
       align-items: center;
       padding: 0 1vw;
-      color: #000000;
+      color: #000;
       min-height: 0;
     }
 
@@ -91,26 +97,31 @@
       background-color: #fff8dc;
     }
 
+    /* Font giới hạn bởi chiều ngang: 17vh (~82px) vừa khít tên dài nhất */
     .product-name {
       text-align: left;
-      font-size: 8vh;
+      font-size: 17vh;
       font-weight: bold;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       padding-right: 1vw;
+      line-height: 1;
     }
 
+    /* Giá và % ngắn hơn → to hơn tý */
     .price-val {
       text-align: right;
       font-weight: bold;
-      font-size: 9vh;
+      font-size: 19vh;
+      line-height: 1;
     }
 
     .change-val {
       text-align: center;
       font-weight: bold;
-      font-size: 8.5vh;
+      font-size: 17vh;
+      line-height: 1;
     }
 
     .change-val.up   { color: #139113; }
@@ -121,10 +132,6 @@
   <div class="container">
     <div class="title">MẠNH VŨ SILVER - 91 TRẦN HƯNG ĐẠO - KÍNH CHÀO QUÝ KHÁCH</div>
 
-    <%
-      const colSize = Math.ceil(products.length / 1);
-      const colProducts = products.slice(0, colSize);
-    %>
     <div class="price-column">
       <div class="column-header">
         <div style="text-align:left; padding-left:0.5vw;">Sản phẩm</div>
@@ -134,7 +141,7 @@
       </div>
 
       <div class="rows-wrapper">
-        <% colProducts.forEach(product => { %>
+        <% products.forEach(product => { %>
           <div class="product-row">
             <div class="product-name"><%= product.name %></div>
             <div class="price-val" style="color:#b61414;"><%= product.buy %></div>
