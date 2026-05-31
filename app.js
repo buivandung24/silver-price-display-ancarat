@@ -57,7 +57,6 @@ function calculateChange(current, previous) {
   return rounded;
 }
 
-// Hàm chính: lấy dữ liệu API → lọc theo danh sách mong muốn
 async function fetchAndFilterProducts(desiredList) {
   const api_url = "https://giabac.ancarat.com/api/price-data";
   const isDefault = (desiredList === productGroups.default);
@@ -103,7 +102,6 @@ async function fetchAndFilterProducts(desiredList) {
         buy = matched.buy;
 
         if (isDefault) {
-          // Cắt 4 ký tự cuối nếu chuỗi đủ dài (tránh lỗi chuỗi quá ngắn)
           if (sell.length > 4) sell = sell.slice(0, -4);
           if (buy.length > 4)  buy = buy.slice(0, -4);
         }
@@ -142,7 +140,7 @@ async function fetchAndFilterProducts(desiredList) {
     return displayed;
 
   } catch (err) {
-    console.error('Lỗi fetch API:', err.message);
+    console.error('Lỗi fetch API cũ:', err.message);
     last_update = 'Lỗi kết nối API';
     return desiredList.map(d => ({
       name: d.title,
@@ -153,9 +151,90 @@ async function fetchAndFilterProducts(desiredList) {
   }
 }
 
+async function fetchManhVuProducts() {
+  const api_url = "https://manhvusilver.vn/manhvusilver/api.php";
+
+  try {
+    const response = await axios.get(api_url, { timeout: 10000 });
+    if (response.status !== 200) throw new Error("API mới trả về mã != 200");
+
+    const data = response.data;
+
+    if (!data || !data.data || !Array.isArray(data.data)) {
+      throw new Error("Dữ liệu API mới không đúng định dạng");
+    }
+
+    const all_products = data.data.map(item => ({
+      product: (item.product || '').trim(),
+      sell: (item.sell || '').trim(),
+      buy: (item.buy || '').trim()
+    })).filter(p => p.product && p.sell && p.buy);
+
+    const desiredList = productGroups.manhvu;
+    const displayed = [];
+
+    for (const desired of desiredList) {
+      const matched = all_products.find(p => 
+        p.product.toLowerCase().includes(desired.title.toLowerCase()) ||
+        desired.keywords.every(kw => p.product.toLowerCase().includes(kw.toLowerCase()))
+      );
+
+      let sell = '-';
+      let buy = '-';
+      let changePercent = '0.00';
+
+      if (matched) {
+        sell = matched.sell;
+        buy = matched.buy;
+
+        const sellNum = parseFloat(sell.replace(/,/g, ''));
+        const prev = previousPrices[desired.title];
+
+        if (prev && prev.sell > 0) {
+          const change = calculateChange(sell, prev.sell);
+          if (change !== null) {
+            changePercent = change;
+          } else if (prev.changePercent && prev.changePercent !== '-') {
+            changePercent = prev.changePercent;
+          }
+        }
+
+        if (sellNum > 0) {
+          previousPrices[desired.title] = {
+            sell: sellNum,
+            buy: parseFloat(buy.replace(/,/g, '')) || 0,
+            changePercent
+          };
+        }
+      } else if (previousPrices[desired.title]) {
+        changePercent = previousPrices[desired.title].changePercent || '-';
+      }
+
+      displayed.push({
+        name: desired.title,
+        sell,
+        buy,
+        change: changePercent
+      });
+    }
+
+    return displayed;
+
+  } catch (err) {
+    console.error('Lỗi fetch API mới:', err.message);
+    return productGroups.manhvu.map(d => ({
+      name: d.title,
+      sell: '-',
+      buy: '-',
+      change: '-'
+    }));
+  }
+}
+
+// ==================== ROUTES ====================
+
 app.get('/api/data', async (req, res) => {
   const products = await fetchAndFilterProducts(productGroups.default);
-
   const current_time = last_update !== 'Lỗi kết nối API'
     ? vietnamTimeFormatter.format(new Date())
     : 'Lỗi cập nhật';
@@ -163,19 +242,10 @@ app.get('/api/data', async (req, res) => {
   res.json({ products, current_time, vat_note, hotline });
 });
 
-
-
 app.get('/', async (req, res) => {
   const products = await fetchAndFilterProducts(productGroups.default);
   const current_time = vietnamTimeFormatter.format(new Date());
-
-  res.render('index', {
-    products,
-    current_time,
-    last_update,
-    vat_note,
-    hotline
-  });
+  res.render('index', { products, current_time, last_update, vat_note, hotline });
 });
 
 app.get('/xadan', async (req, res) => {
@@ -202,14 +272,15 @@ app.get('/nguyentrai2', async (req, res) => {
   res.render('nguyentrai2', { products, current_time });
 });
 
+// ==================== ROUTES DÙNG API MỚI ====================
 app.get('/manhvu', async (req, res) => {
-  const products = await fetchAndFilterProducts(productGroups.manhvu);
+  const products = await fetchManhVuProducts();
   const current_time = vietnamTimeFormatter.format(new Date());
   res.render('manhvu', { products, current_time });
 });
 
 app.get('/manhvu2', async (req, res) => {
-  const products = await fetchAndFilterProducts(productGroups.manhvu);
+  const products = await fetchManhVuProducts();
   const current_time = vietnamTimeFormatter.format(new Date());
   res.render('manhvu2', { products, current_time });
 });
